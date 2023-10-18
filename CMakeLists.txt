@@ -115,15 +115,17 @@ endif()
 
 # Installation
 # ============
-if(${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
-    set(skip_install_by_default OFF)
-else()
-    set(skip_install_by_default ON)
-endif ()
-OPTION(SKIP_INSTALL "Whether to skip installation of xsimd. By default it's OFF, but when built as a subproject, it's defaulted to ON" ${skip_install_by_default})
 
-if(${SKIP_INSTALL})
-    return()
+# Check if we are in a subproject.
+if(${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
+    set(skip_install_by_default OFF) # not a subproject
+else()
+    set(skip_install_by_default ON) # subproject
+endif ()
+# Do installation if we are not subproject, otherwise skip it. This can be controlled with XSIMD_SKIP_INSTALL
+OPTION(XSIMD_SKIP_INSTALL "Whether to skip installation of xsimd. By default it's OFF, but when built as a subproject, it's defaulted to ON" ${skip_install_by_default})
+if(${XSIMD_SKIP_INSTALL})
+    return() # skip installation
 endif ()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
